@@ -89,7 +89,7 @@ const dappConfigFile = path.join(__dirname, 'dapp-config.json');
       processContractFolders(['Flow', 'Decentology', 'Registry'])
         .then(() => {
           if (mode === MODE.DEFAULT) {
-            spawn('npx', ['watch', `node ${path.join(__dirname, SCRIPT_NAME)} deploy`, 'contracts/project'], { stdio: 'inherit' });
+            spawn('npx', ['watch', `node ${path.join(__dirname, SCRIPT_NAME)} deploy`, 'contracts\\project'], { stdio: 'inherit' });
           } else if (mode === MODE.TEST) {
             processContractFolders(['Project'])
               .then(async () => {
@@ -209,7 +209,7 @@ const dappConfigFile = path.join(__dirname, 'dapp-config.json');
 
       emitter.on('file', filePath => {
         for (let f = 0; f < folders.length; f++) {
-          if ((filePath.endsWith('.cdc')) && (filePath.indexOf(`/contracts/${folders[f]}/`) > -1)) {
+          if ((filePath.endsWith('.cdc')) && (filePath.indexOf(`\\contracts\\${folders[f]}\\`) > -1)) {
             let { code, contractNames, deps } = getContractDependencies(folders[f], filePath);
 
             // Ignore imported contracts in folders that

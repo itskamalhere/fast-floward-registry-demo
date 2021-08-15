@@ -15,7 +15,7 @@
         "dapp": "lerna run dev --scope=@decentology/dappstarter-client --stream",
         "dapp:prod": "lerna run build:prod",
         "server": "lerna run dev --scope=@decentology/dappstarter-server --stream",
-        "test": "lerna run test $npm_config_script --scope=@decentology/dappstarter-dapplib --stream",
+        "test": "lerna run test --scope=@decentology/dappstarter-dapplib --stream",
         "dev": "npm start"
     },
     "dependencies": {
