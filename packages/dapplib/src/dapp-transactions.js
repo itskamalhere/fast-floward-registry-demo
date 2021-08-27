@@ -136,12 +136,12 @@ module.exports = class DappTransactions {
 				transaction(recipient: Address, metadata: {String: String}) {
 				    
 				    // the tenant
-				    let tenant: &RegistryNFTContract.Tenant
+				    let tenant: &RegistryNFTContract.Tenant{RegistryNFTContract.ITenant,RegistryNFTContract.ITenantMinter}
 				    let receiver: &RegistryNFTContract.Collection{NonFungibleToken.CollectionPublic}
 				
 				    prepare(acct: AuthAccount) {
 				
-				        self.tenant = acct.borrow<&RegistryNFTContract.Tenant>(from: RegistryNFTContract.TenantStoragePath)
+				        self.tenant = acct.borrow<&RegistryNFTContract.Tenant{RegistryNFTContract.ITenant,RegistryNFTContract.ITenantMinter}>(from: RegistryNFTContract.TenantStoragePath)
 				                        ?? panic("Could not borrow the Tenant")
 				         // borrow the recipient's public NFT collection reference
 				        self.receiver = getAccount(recipient).getCapability(/public/NFTCollection)
@@ -249,8 +249,8 @@ module.exports = class DappTransactions {
 				      // save the new Tenant resource from RegistryNFTContract to account storage
 				      acct.save(<-RegistryNFTContract.instance(authNFT: authNFTRef), to: RegistryNFTContract.TenantStoragePath)
 				
-				      // link the Tenant resource to the public with ITenant restrictions
-				      acct.link<&RegistryNFTContract.Tenant{RegistryNFTContract.ITenant}>(RegistryNFTContract.TenantPublicPath, target: RegistryNFTContract.TenantStoragePath)
+				      // link the Tenant resource to the public with ITenant and ITenantMinter restrictions
+				      acct.link<&RegistryNFTContract.Tenant{RegistryNFTContract.ITenant, RegistryNFTContract.ITenantMinter}>(RegistryNFTContract.TenantPublicPath, target: RegistryNFTContract.TenantStoragePath)
 				    }
 				  }
 				

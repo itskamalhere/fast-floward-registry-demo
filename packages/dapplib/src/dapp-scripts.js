@@ -7,6 +7,23 @@ const fcl = require("@onflow/fcl");
 
 module.exports = class DappScripts {
 
+	static flowtoken_get_balance() {
+		return fcl.script`
+				import FungibleToken from 0xee82856bf20e2aa6
+				import FlowToken from 0x0ae53cb6e3f42a79
+				
+				pub fun main(account: Address): UFix64 {
+				
+				    let vaultRef = getAccount(account)
+				        .getCapability(/public/flowTokenBalance)
+				        .borrow<&FlowToken.Vault{FungibleToken.Balance}>()
+				        ?? panic("Could not borrow Balance reference to the Vault")
+				
+				    return vaultRef.balance
+				}  
+		`;
+	}
+
 	static nft_get_nfts_in_collection() {
 		return fcl.script`
 				import NonFungibleToken from 0x01cf0e2f2f715450
@@ -34,23 +51,6 @@ module.exports = class DappScripts {
 				  let metadata: {String: String} = borrowedNFT.metadata
 				  return metadata
 				}
-		`;
-	}
-
-	static flowtoken_get_balance() {
-		return fcl.script`
-				import FungibleToken from 0xee82856bf20e2aa6
-				import FlowToken from 0x0ae53cb6e3f42a79
-				
-				pub fun main(account: Address): UFix64 {
-				
-				    let vaultRef = getAccount(account)
-				        .getCapability(/public/flowTokenBalance)
-				        .borrow<&FlowToken.Vault{FungibleToken.Balance}>()
-				        ?? panic("Could not borrow Balance reference to the Vault")
-				
-				    return vaultRef.balance
-				}  
 		`;
 	}
 

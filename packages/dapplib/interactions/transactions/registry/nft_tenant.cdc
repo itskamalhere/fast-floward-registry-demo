@@ -19,8 +19,8 @@ transaction() {
       // save the new Tenant resource from RegistryNFTContract to account storage
       acct.save(<-RegistryNFTContract.instance(authNFT: authNFTRef), to: RegistryNFTContract.TenantStoragePath)
 
-      // link the Tenant resource to the public with ITenant restrictions
-      acct.link<&RegistryNFTContract.Tenant{RegistryNFTContract.ITenant}>(RegistryNFTContract.TenantPublicPath, target: RegistryNFTContract.TenantStoragePath)
+      // link the Tenant resource to the public with ITenant and ITenantMinter restrictions
+      acct.link<&RegistryNFTContract.Tenant{RegistryNFTContract.ITenant, RegistryNFTContract.ITenantMinter}>(RegistryNFTContract.TenantPublicPath, target: RegistryNFTContract.TenantStoragePath)
     }
   }
 

@@ -5,6 +5,8 @@ const ClipboardJS = require('clipboard');
 const BN = require('bn.js'); // Required for injected code
 const manifest = require('../manifest.json');
 const t = require('@onflow/types');
+const ipfsClient = require('ipfs-http-client');
+
 
 
 module.exports = class DappLib {
@@ -97,6 +99,11 @@ module.exports = class DappLib {
   static async mintNFT(data) {
 
     let config = DappLib.getConfig();
+    config.ipfs = {
+      host: 'ipfs.infura.io',
+      protocol: 'https',
+      port: 5001
+    }
     let result = await Blockchain.post({
       config: config,
       roles: {
