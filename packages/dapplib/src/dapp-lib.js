@@ -10,7 +10,14 @@ const ipfsClient = require('ipfs-http-client');
 
 
 module.exports = class DappLib {
-
+  
+  static getIpfsConfig() {
+    return {
+      host: 'ipfs.infura.io',
+      protocol: 'https',
+      port: 5001
+    }    
+  }
 
   /********** FLOW TOKEN **********/
 
@@ -98,12 +105,8 @@ module.exports = class DappLib {
 
   static async mintNFT(data) {
 
-    let config = DappLib.getConfig();
-    config.ipfs = {
-      host: 'ipfs.infura.io',
-      protocol: 'https',
-      port: 5001
-    }
+    let config = DappLib.getConfig();    
+    let ipfsCid = await DappLib.setIPFSMetadata(data,config);
     let result = await Blockchain.post({
       config: config,
       roles: {
@@ -113,7 +116,7 @@ module.exports = class DappLib {
       'nft_mint_nft',
       {
         recipient: { value: data.recipient, type: t.Address },
-        metadata: { value: [{ key: 'name', value: data.nftName }], type: t.Dictionary({ key: t.String, value: t.String }) }
+        ipfshash: { value: ipfsCid, type: t.String }
       }
     );
 
@@ -182,11 +185,14 @@ module.exports = class DappLib {
         id: { value: parseInt(data.id), type: t.UInt64 }
       }
     );
-    console.log(result.callData)
+    let ipfsCid = result.callData;
+    console.log(ipfsCid);    
+    let metadata = await DappLib.getIPFSMetadata(ipfsCid);
+    console.log(metadata);
     return {
-      type: DappLib.DAPP_RESULT_OBJECT,
+      type: DappLib.DAPP_RESULT_STRING,
       label: 'NFT Metadata',
-      result: result.callData
+      result: metadata
     }
   }
 
@@ -255,6 +261,23 @@ module.exports = class DappLib {
       label: 'Transaction Hash',
       result: result.callData.transactionId
     }
+  }
+
+  static async setIPFSMetadata(data) {
+    
+    let client = ipfsClient.create(DappLib.getIpfsConfig());
+    const { cid } = await client.add(data.nftName);
+    console.log("CID: " + cid);
+    return cid.toString();
+  }
+
+  static async getIPFSMetadata(ipfsCid) {
+    
+    let client = ipfsClient.create(DappLib.getIpfsConfig());
+    for await (const chunk of client.cat(ipfsCid)) {      
+      var metadata = new TextDecoder().decode(chunk);      
+    }
+    return metadata;
   }
 
 

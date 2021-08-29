@@ -7,15 +7,15 @@ import RegistryNFTContract from Registry.RegistryNFTContract
 // we are calling the transaction with the Tenant itself because it stores
 // an NFTMinter resource in the Tenant resource
 
-transaction(recipient: Address, metadata: {String: String}) {
+transaction(recipient: Address, ipfshash: String) {
     
     // the tenant
-    let tenant: &RegistryNFTContract.Tenant{RegistryNFTContract.ITenant,RegistryNFTContract.ITenantMinter}
+    let tenant: &RegistryNFTContract.Tenant
     let receiver: &RegistryNFTContract.Collection{NonFungibleToken.CollectionPublic}
 
     prepare(acct: AuthAccount) {
 
-        self.tenant = acct.borrow<&RegistryNFTContract.Tenant{RegistryNFTContract.ITenant,RegistryNFTContract.ITenantMinter}>(from: RegistryNFTContract.TenantStoragePath)
+        self.tenant = acct.borrow<&RegistryNFTContract.Tenant>(from: RegistryNFTContract.TenantStoragePath)
                         ?? panic("Could not borrow the Tenant")
          // borrow the recipient's public NFT collection reference
         self.receiver = getAccount(recipient).getCapability(/public/NFTCollection)
@@ -29,6 +29,6 @@ transaction(recipient: Address, metadata: {String: String}) {
         let minter = self.tenant.minterRef()
 
         // mint the NFT and deposit it to the recipient's collection
-        minter.mintNFT(tenant: self.tenant, recipient: self.receiver, metadata: metadata)
+        minter.mintNFT(tenant: self.tenant, recipient: self.receiver, ipfshash: ipfshash)
     }
 }

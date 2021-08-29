@@ -18,8 +18,7 @@ pub contract RegistryNFTContract: NonFungibleToken, RegistryInterface {
     }
 
     pub resource interface ITenantMinter {
-        access(contract) fun updateTotalSupply()
-        pub fun minterRef()
+        access(contract) fun updateTotalSupply()        
     }
 
     // Tenant
@@ -107,16 +106,15 @@ pub contract RegistryNFTContract: NonFungibleToken, RegistryInterface {
     // any extra information.
     //
     pub resource NFT: NonFungibleToken.INFT {
-        pub let id: UInt64
-
-        pub var metadata: {String: String}
+        pub let id: UInt64        
+        pub let ipfshash: String
 
         // upon creating (or "minting") this NFT Resource,
         // we must pass in a reference to a Tenant to update its totalSupply.
-        init(_tenant: &Tenant{ITenant,ITenantMinter}, _metadata: {String: String}) {
+        init(_tenant: &Tenant{ITenant,ITenantMinter}, _ipfshash: String) {
             // initialize NFT fields
             self.id = _tenant.totalSupply
-            self.metadata = _metadata
+            self.ipfshash = _ipfshash
 
             // update the Tenant's totalSupply
             _tenant.updateTotalSupply()
@@ -230,10 +228,10 @@ pub contract RegistryNFTContract: NonFungibleToken, RegistryInterface {
         // and deposits it in the recipients collection using 
         // their collection reference
         //
-        pub fun mintNFT(tenant: &Tenant{ITenant,ITenantMinter}, recipient: &RegistryNFTContract.Collection{NonFungibleToken.CollectionPublic}, metadata: {String: String}) {
+        pub fun mintNFT(tenant: &Tenant{ITenant, ITenantMinter}, recipient: &RegistryNFTContract.Collection{NonFungibleToken.CollectionPublic}, ipfshash: String) {
 
             // create a new NFT
-            var newNFT <- create NFT(_tenant: tenant, _metadata: metadata)
+            var newNFT <- create NFT(_tenant: tenant,_ipfshash: ipfshash)
 
             // deposit it in the recipient's account using their reference
             recipient.deposit(token: <-newNFT)

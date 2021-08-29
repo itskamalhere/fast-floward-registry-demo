@@ -53,14 +53,14 @@ export default class NftHarness extends LitElement {
           </account-widget>
         </action-card>
       
-        <action-card title="NFT - Mint NFT" description="Mint an NFT into an account using the Tenant's data" action="mintNFT"
+        <action-card title="NFT - Mint NFT and Set Metadata In IPFS" description="Mint an NFT into an account using the Tenant's data and set metadata in IPFS" action="mintNFT"
           method="post" fields="acct recipient nftName">
           <account-widget field="acct" label="Tenant Account">
           </account-widget>
           <account-widget field="recipient" label="Recipient Account">
           </account-widget>
-          <text-widget field="nftName" label="Name of NFT" placeholder="Jacob Rocks"></text-widget>
-        </action-card>
+          <text-widget field="nftName" label="metadata of NFT" placeholder=""></text-widget>
+          </action-card>
       
         <action-card title="NFT - Transfer NFT" description="Transfer an NFT from Giver --> Recipient" action="transferNFT"
           method="post" fields="giver recipient id">
@@ -77,7 +77,7 @@ export default class NftHarness extends LitElement {
           </account-widget>
         </action-card>
       
-        <action-card title="NFT - Get NFT Metadata" description="Get NFT Metadata" action="getNFTMetadata" method="get"
+        <action-card title="NFT - Get NFT Metadata from IPFS" description="Get NFT Metadata from IPFS" action="getNFTMetadata" method="get"
           fields="acct id">
           <account-widget field="acct" label="Account">
           </account-widget>
